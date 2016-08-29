@@ -1,10 +1,14 @@
-define apache::module($ensure = 'present', $config_source = '', $config_content = '') {
+define apache::module(
+  $ensure         = 'present',
+  $config_source  = '',
+  $config_content = ''
+) {
   validate_string($config_source, $config_content)
   if ($ensure != 'present' and $ensure != 'absent') {
-    fail("Apache::Module[$name] ensure must be one of present/absent")
+    fail("Apache::Module[${name}] ensure must be one of present/absent")
   }
   if ($config_content and $config_source) {
-    fail("Apache::Module[$name] cannot specify both config_source and config_content")
+    fail("Apache::Module[${name}] cannot specify both config_source and config_content")
   }
 
   $mods_enabled_path   = "/etc/apache2/mods-enabled/${name}.load"
@@ -20,8 +24,8 @@ define apache::module($ensure = 'present', $config_source = '', $config_content 
 
   if ($config_content) {
     file { $mod_config_path:
-      content => $config_content,
       ensure  => $ensure,
+      content => $config_content,
     }
   }
   elsif ($config_source) {
@@ -34,8 +38,8 @@ define apache::module($ensure = 'present', $config_source = '', $config_content 
     }
     else {
       file { $mod_config_path:
-        source => $config_source,
         ensure => $ensure,
+        source => $config_source,
       }
     }
   }

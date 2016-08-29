@@ -1,15 +1,15 @@
 define apache::site(
-  $ensure = 'present',
-  $source = '',
+  $ensure  = 'present',
+  $source  = '',
   $content = ''
 ) {
   validate_string($source, $content)
   if ($ensure != 'present' and $ensure != 'absent') {
-    fail("Apache::Site[$name] ensure should be one of present/absent")
+    fail("Apache::Site[${name}] ensure should be one of present/absent")
   }
 
   if ($content and $source) {
-    fail("Apache::Site[$name] cannot specify both source and content")
+    fail("Apache::Site[${name}] cannot specify both source and content")
   }
   case $lsbdistcodename {
     'jessie': {
@@ -30,8 +30,8 @@ define apache::site(
 
   if ($content) {
     file { $sites_available_path:
-      content => $content,
       ensure  => $ensure,
+      content => $content,
     }
   }
   elsif ($source) {
@@ -43,8 +43,8 @@ define apache::site(
       }
     } else {
       file { $sites_available_path:
-        source => $source,
         ensure => $ensure,
+        source => $source,
       }
     }
   }

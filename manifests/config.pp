@@ -1,18 +1,18 @@
 define apache::config(
-  $ensure = 'present',
-  $source = '',
+  $ensure  = 'present',
+  $source  = '',
   $content = ''
 ) {
- validate_string($source, $content)
+  validate_string($source, $content)
   if ($ensure != 'present' and $ensure != 'absent') {
-    fail("Apache::Config[$name] ensure should be one of present/absent")
+    fail("Apache::Config[${name}] ensure should be one of present/absent")
   }
 
   if (!$content and !$source and $ensure != 'absent') {
-    fail("Apache::Config[$name] either source or content must be present")
+    fail("Apache::Config[${name}] either source or content must be present")
   }
   elsif ($content and $source) {
-    fail("Apache::Config[$name] cannot specify both source and content")
+    fail("Apache::Config[${name}] cannot specify both source and content")
   }
 
   File {

@@ -1,11 +1,14 @@
-class apache($config = '', $worker = 'mpm') {
+class apache(
+  $config = '',
+  $worker = 'mpm'
+) {
   package { 'apache2':
     ensure => 'present',
   }
 
   package { 'apache2-worker':
-    name   => "apache2-mpm-worker",
     ensure => 'present',
+    name   => 'apache2-mpm-worker',
   }
 
   package { 'apache2-doc':
@@ -26,10 +29,10 @@ class apache($config = '', $worker = 'mpm') {
     require     => Package['apache2'],
   }
 
-  exec { "force-reload-apache2":
-    command     => "/etc/init.d/apache2 force-reload",
+  exec { 'force-reload-apache2':
+    command     => '/etc/init.d/apache2 force-reload',
     refreshonly => true,
-    require     => Package["apache2"],
+    require     => Package['apache2'],
   }
 
   # remove the default site
