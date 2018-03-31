@@ -1,6 +1,6 @@
 define apache::site(
   $ensure  = 'present',
-  $source  = '',
+  $source  = undef,
   $content = ''
 ) {
   validate_string($source, $content)
@@ -8,10 +8,10 @@ define apache::site(
     fail("Apache::Site[${name}] ensure should be one of present/absent")
   }
 
-  if ($content and $source) {
+  if ($content != '' and $source) {
     fail("Apache::Site[${name}] cannot specify both source and content")
   }
-  case $lsbdistcodename {
+  case $::lsbdistcodename {
     'jessie': {
       $sites_enabled_path   = "/etc/apache2/sites-enabled/${name}.conf"
       $sites_available_path = "/etc/apache2/sites-available/${name}.conf"
@@ -28,7 +28,7 @@ define apache::site(
     group  => 'root',
   }
 
-  if ($content) {
+  if ($content != '') {
     file { $sites_available_path:
       ensure  => $ensure,
       content => $content,
