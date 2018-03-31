@@ -1,13 +1,13 @@
 define apache::module(
   $ensure         = 'present',
-  $config_source  = '',
+  $config_source  = undef,
   $config_content = ''
 ) {
   validate_string($config_source, $config_content)
   if ($ensure != 'present' and $ensure != 'absent') {
     fail("Apache::Module[${name}] ensure must be one of present/absent")
   }
-  if ($config_content and $config_source) {
+  if ($config_content != '' and $config_source) {
     fail("Apache::Module[${name}] cannot specify both config_source and config_content")
   }
 
@@ -22,7 +22,7 @@ define apache::module(
     group   => 'root',
   }
 
-  if ($config_content) {
+  if ($config_content != '') {
     file { $mod_config_path:
       ensure  => $ensure,
       content => $config_content,
