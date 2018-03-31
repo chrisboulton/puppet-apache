@@ -1,6 +1,6 @@
 define apache::config(
   $ensure  = 'present',
-  $source  = '',
+  $source  = undef,
   $content = ''
 ) {
   validate_string($source, $content)
@@ -8,10 +8,10 @@ define apache::config(
     fail("Apache::Config[${name}] ensure should be one of present/absent")
   }
 
-  if (!$content and !$source and $ensure != 'absent') {
+  if ($content == '' and !$source and $ensure != 'absent') {
     fail("Apache::Config[${name}] either source or content must be present")
   }
-  elsif ($content and $source) {
+  elsif ($content != '' and $source) {
     fail("Apache::Config[${name}] cannot specify both source and content")
   }
 
@@ -23,26 +23,26 @@ define apache::config(
     group   => 'root',
   }
 
-  case $lsbdistcodename {
+  case $::lsbdistcodename {
     'jessie': { $conf_path = "/etc/apache2/conf-available/${name}.conf" }
     default:  { $conf_path = "/etc/apache2/conf.d/${name}.conf" }
   }
 
-  if ($content) {
+  if ($ensure == 'absent') {
     file { $conf_path:
-      content => $content,
+      ensure => 'absent',
     }
-  } elsif ($ensure != 'absent') {
+  } elsif ($source) {
     file { $conf_path:
       source => $source,
     }
   } else {
     file { $conf_path:
-      ensure => 'absent',
+      content => $content,
     }
   }
 
-  case $lsbdistcodename {
+  case $::lsbdistcodename {
     'jessie': {
       case $ensure {
         'absent': {
